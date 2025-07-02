@@ -2,7 +2,8 @@ import os
 import sys
 import asyncio
 from flask import Flask, request, jsonify
-
+import nest_asyncio
+nest_asyncio.apply()
 # Add agent directory to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'agent')))
 from autogen_agentchat.agents import AssistantAgent
@@ -102,8 +103,6 @@ def literature_review():
         return last_content
 
     try:
-        import nest_asyncio
-        nest_asyncio.apply()
         summary = asyncio.run(get_summary())
         return jsonify({'content': summary})
     except Exception as e:
