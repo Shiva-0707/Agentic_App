@@ -5,3 +5,6 @@ streamlit
 arxiv
 tiktoken
 python-dotenv
+flask
+openai
+nest_asynci

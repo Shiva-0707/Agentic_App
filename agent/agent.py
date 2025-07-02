@@ -74,11 +74,11 @@ summarizer_agent = AssistantAgent(
         "**Write a 2-3 sentence introduction to the topic. Make this section bold and clear.**\n\n"
         "## Papers\n"
         "For each paper below, use a circle bullet (●) and format as follows, with each paper in a separate paragraph. Do NOT return a JSON list, only return the Markdown report:\n"
-        "● 👉 [**{title}**]\n"
-        "   `PDF URL: {pdf_url}`\n"
-        "   _Authors_: {authors}  |  _Year_: {published}\n"
-        "   _Summary_: {summary}\n"
-        "\n"
+        "● 👉 [**[{title}]({pdf_url})**]  "
+        "\n   **Authors**: {authors}  "
+        "\n   **Year**: {published}  "
+        "\n   **Summary**: {summary}  "
+        "\n\n"
         "Add extra spacing between papers for readability. Make the bullets visually appealing and easy to scan. Use bold for titles, monospace for URLs, and italics for authors/year/summary labels.\n\n"
         "## **Conclusion**\n"
         "**End with a brief, insightful conclusion in bold.**\n\n"
@@ -93,9 +93,16 @@ teams = RoundRobinGroupChat(
 
 
 async def run_team():
-    task = 'Conduct a literature review on the topic - Autogen and return exactly 5 papers.'
+    task = 'Conduct a literature review on the topic - Autogen and return exactly 2 papers.'
+    last_content = None
     async for msg in teams.run_stream(task=task):
-        print(msg)
+        # Only print the content from the SummarizerAgent
+        if hasattr(msg, 'source') and getattr(msg, 'source', None) == 'SummarizerAgent' and hasattr(msg, 'content'):
+            last_content = msg.content
+    if last_content:
+        print(f"content={last_content}")
+    else:
+        print("No summarizer agent content found.")
         
 if __name__ == "__main__":
     # Use the agent team workflow (researcher and summarizer agents)
