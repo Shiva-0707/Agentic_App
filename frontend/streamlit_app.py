@@ -1,5 +1,7 @@
 import streamlit as st
 import requests
+import os
+BACKEND_URL = os.getenv("BACKEND_URL", "https://flask-server-152s.onrender.com")
 
 st.set_page_config(
     page_title="AI Literature Review Agent",
@@ -17,7 +19,7 @@ if st.button("Generate Literature Review"):
     with st.spinner("Generating your literature review..."):
         try:
             response = requests.post(
-                "http://localhost:5000/api/literature_review",
+                f"{BACKEND_URL}/api/literature_review",
                 json={"topic": topic, "num_papers": num_papers},
                 timeout=600
             )
